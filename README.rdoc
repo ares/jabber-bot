@@ -1,33 +1,43 @@
-= Jabber::Bot
+= Jabber::MUCBot
 
-Easily create simple regex powered Jabber bots.
+Easily create simple regex powered Jabber Multi Users Chat bots.
 
-Jabber::Bot makes it simple to create and command your own Jabber bot. Bots
-are created by defining commands powered by regular expressions and Ruby.
+This bot has been forked from Brett Stimmerman's Jabber::Bot.
+The purpose is to create an even simpler MUC bot.
+It will be able to join a room and execute public command.
 
+Jabber::MUCBot makes it simple to create and command your own Jabber MUC bot.
+Bots are created by defining commands powered by regular expressions and Ruby.
+
+Bot part
 *Author*::    Brett Stimmerman (mailto:brettstimmerman@gmail.com)
 *Version*::   1.3.0 (2011-05-15)
 *Copyright*:: Copyright (c) 2011 Brett Stimmerman. All rights reserved.
+
+MUCBot part
+*Author*::    Vivien Didelot (mailto:vivien.didelot@gmail.com)
+*Version*::   0.0.1
+*Copyright*:: Copyright (c) 2009 Brett Stimmerman. All rights reserved.
+
 *License*::   New BSD License (http://opensource.org/licenses/bsd-license.php)
-*Website*::   http://github.com/brettstimmerman/jabber-bot
+*Website*::   http://github.com/v0n/jabber-mucbot
 
 == Requires
 
-* RubyGems
-* Jabber::Simple 0.8.7+
+* rubygems
+* xmpp4r
 
 == Usage
 
   require 'rubygems'
-  require 'jabber/bot'
+  require 'jabber/mucbot'
 
-  # Create a public Jabber::Bot
+  # Create a public Jabber::MUCBot
   config = {
-    :name      => 'SampleBot',
-    :jabber_id => 'bot@example.com',
+    :nick      => 'bot',
     :password  => 'secret',
-    :master    => 'master@example.com',
-    :is_public => true
+    :server    => 'example.org',
+    :room      => 'room'
   }
 
   bot = Jabber::Bot.new(config)
@@ -51,5 +61,30 @@ are created by defining commands powered by regular expressions and Ruby.
     "'#{message}' written to $stdout"
   end
 
+  bot = Jabber::MUCBot.new(config)
+
+  # Give your bot a command, 'rand'
+  bot.add_command(/^rand$/) { rand(10).to_s }
+
+  # Give your bot a command, 'puts <string>'
+  bot.add_command(/^puts\s+.+$/) do |sender, message|
+    puts "#{sender} says '#{message}'"
+    "'#{message}' written to $stdout"
+  end
+
+  # Add a custome welcome message
+  bot.welcome { |guy| "Hello #{guy}!" }
+
   # Bring your new bot to life
-  bot.connect
+  bot.join
+
+All that can be done faster with the class method +start+.
+
+  Jabber::MUCBot.start config do |bot|
+    bot.on(/^rand$/) { rand(10).to_s }
+    bot.on(/^puts\s+.+$/) do |sender, message|
+      puts "#{sender} says '#{message}'"
+      "'#{message}' written to $stdout"
+    end
+    bot.welcome { |guy| "Hello #{guy}!" }
+  end
