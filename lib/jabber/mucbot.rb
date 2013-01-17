@@ -123,8 +123,9 @@ module Jabber
       nick = @config[:nick]
       serv = @config[:server]
       room = @config[:room]
+      conference_server = @config[:conference_server]
 
-      jid = Jabber::JID.new("#{room}@conference.#{serv}/#{nick}")
+      jid = Jabber::JID.new("#{room}@#{conference_server}/#{nick}")
       @room.join(jid)
 
       @room.add_message_callback do |message|
