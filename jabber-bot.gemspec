@@ -24,7 +24,5 @@ Gem::Specification.new do |s|
                     '--main' << 'README.rdoc' <<
                     '--line-numbers'
 
-  s.required_ruby_version = '>=1.8.4'
-
-  s.add_dependency('xmpp4r-simple', '>=0.8.7')
+  s.add_dependency('xmpp4r-simple-19', '>=0.8.7')
 end
